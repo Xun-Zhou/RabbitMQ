@@ -2,6 +2,7 @@
 RabbitMQ是一个由Erlang语言开发的AMQP的开源实现。Advanced Message Queue，高级消息队列协议，它是应用层协议的一个开放标准，为面向消息的中间件设计，基于此协议的客户端与消息中间件可传递消息，并不受产品、开发语言等条件的限制。
 ## RabbitMQ 内部结构
 RabbitMQ是AMQP协议的一个开源实现，所以其内部实际上也是AMQP中的基本概念 
+
 ![RabbitMQ 内部结构](https://github.com/Xun-Zhou/RabbitMQ/blob/master/base.png "RabbitMQ 内部结构")
 - Message
 消息由消息头和消息体组成。消息体是不透明的，而消息头则由一系列的可选属性组成，这些属性包括routing-key（路由键）、priority（相对于其他消息的优先权）、delivery-mode（指出该消息可能需要持久性存储）等。
@@ -25,6 +26,7 @@ RabbitMQ是AMQP协议的一个开源实现，所以其内部实际上也是AMQP�
 表示消息队列服务器实体。
 ## 消息路由
 AMQP中生产者把消息发布到Exchange上，由Binding决定交换器的消息应该发送到那个队列，消息最终到达队列并被消费者接收。
+
 ![RabbitMQ 路由过程](https://github.com/Xun-Zhou/RabbitMQ/blob/master/exchange.png "RabbitMQ 路由过程")
 ## Exchange 类型
 
