@@ -41,7 +41,7 @@ Exchange有多种分发策略，常用的几种类型：direct、fanout、topic�
 headers匹配AMQP消息的header而不是路由键，此外headers交换器和direct交换器完全一致，但性能差很多，目前几乎用不到了。
 - Direct
 
-![Direct Exchange](https://github.com/Xun-Zhou/RabbitMQ/blob/master/introduce/direct_exchange.png.png "Direct 路由模式")
+![Direct Exchange](https://github.com/Xun-Zhou/RabbitMQ/blob/master/introduce/direct_exchange.png "Direct 路由模式")
 
 直接匹配 完全匹配路由键routing key，queue与exchange绑定的路由键完全相同，发送到对应的queue，它是完全匹配、单播的模式。
 - Fanout
