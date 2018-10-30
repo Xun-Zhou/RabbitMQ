@@ -42,11 +42,11 @@ RabbitMQ安装 安装部署环境 Windows
     
     - 如果只想关闭应用程序，同时保持Erlang节点运行则可以用stop_app
     
-    /sbin/rabbitmqctl stop_app
+        /sbin/rabbitmqctl stop_app
     
     - 启动应用程序
     
-    /sbin/rabbitmqctl start_app
+        /sbin/rabbitmqctl start_app
     
 - 重置RabbitMQ节点
     
@@ -56,18 +56,18 @@ RabbitMQ安装 安装部署环境 Windows
 
     - 查看已声明的队列
     
-    /sbin/rabbitmqctl list_queues
+        /sbin/rabbitmqctl list_queues
     
     - 查看交换器
     
-    /sbin/rabbitmqctl list_exchanges
+        /sbin/rabbitmqctl list_exchanges
     
-    该命令还可以附加参数，比如列出交换器的名称、类型、是否持久化、是否自动删除
+        该命令还可以附加参数，比如列出交换器的名称、类型、是否持久化、是否自动删除
     
-    /sbin/rabbitmqctl list_exchanges name type durable auto_delete
+        /sbin/rabbitmqctl list_exchanges name type durable auto_delete
     
     - 查看绑定
     
-    /sbin/rabbitmqctl list_bindings
+        /sbin/rabbitmqctl list_bindings
     
     
