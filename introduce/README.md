@@ -4,6 +4,7 @@ RabbitMQ是一个由Erlang语言开发的AMQP的开源实现。Advanced Message 
 RabbitMQ是AMQP协议的一个开源实现，所以其内部实际上也是AMQP中的基本概念 
 
 ![RabbitMQ 内部结构](https://github.com/Xun-Zhou/RabbitMQ/blob/master/introduce/base.png "RabbitMQ 内部结构")
+
 - Message
 消息由消息头和消息体组成。消息体是不透明的，而消息头则由一系列的可选属性组成，这些属性包括routing-key（路由键）、priority（相对于其他消息的优先权）、delivery-mode（指出该消息可能需要持久性存储）等。
 - Publisher
@@ -28,17 +29,24 @@ RabbitMQ是AMQP协议的一个开源实现，所以其内部实际上也是AMQP�
 AMQP中生产者把消息发布到Exchange上，由Binding决定交换器的消息应该发送到那个队列，消息最终到达队列并被消费者接收。
 
 ![RabbitMQ 路由过程](https://github.com/Xun-Zhou/RabbitMQ/blob/master/introduce/exchange.png "RabbitMQ 路由过程")
+
 ## Exchange 类型
 Exchange有多种分发策略，常用的几种类型：direct、fanout、topic、headers 。
 headers匹配AMQP消息的header而不是路由键，此外headers交换器和direct交换器完全一致，但性能差很多，目前几乎用不到了。
 - Direct
+
 ![Direct Exchange](https://github.com/Xun-Zhou/RabbitMQ/blob/master/introduce/drict_exchange.png "Direct 路由模式")
+
 直接匹配 完全匹配路由键routing key，queue与exchange绑定的路由键完全相同，发送到对应的queue，它是完全匹配、单播的模式。
 - Fanout
+
 ![Fanout Exchange](https://github.com/Xun-Zhou/RabbitMQ/blob/master/introduce/fanout_exchange.png "Fanout 路由模式")
+
 扇形 与路由键无关，绑定到exchange上的queue都会发送，fanout 类型转发消息是最快的。
 - Topic
+
 ![Topic Exchange](https://github.com/Xun-Zhou/RabbitMQ/blob/master/introduce/topic_exchange.png "Topic 路由模式")
+
 主题 topic是通过routingkey来模糊匹配，在topic模式下支持两个特殊字符的匹配
 "*" (星号) 代表任意 一个单词
 "#" (井号) 0个或者多个单词
