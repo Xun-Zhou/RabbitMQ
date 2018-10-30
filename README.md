@@ -1,5 +1,6 @@
 # RabbitMQ
 RabbitMQ原理及使用
-[RabbitMQ介绍]( "超链接title")
+
+- [RabbitMQ介绍](https://github.com/Xun-Zhou/RabbitMQ/tree/master/introduce)
 
 
