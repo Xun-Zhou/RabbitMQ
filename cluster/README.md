@@ -62,7 +62,7 @@
             docker exec -it myrabbit2 /bin/bash
             rabbitmqctl stop_app
             rabbitmqctl reset
-            rabbitmqctl join_cluster --ram rabbit@rabbit1    //加入集群
+            rabbitmqctl join_cluster --ram rabbit@rabbit1    //加入集群 --ram指定为内存节点 未指定默认为磁盘节点
             rabbitmqctl start_app
             exit
      
@@ -71,7 +71,7 @@
             docker exec -it myrabbit3 /bin/bash
             rabbitmqctl stop_app
             rabbitmqctl reset
-            rabbitmqctl join_cluster --ram rabbit@rabbit1    //加入集群
+            rabbitmqctl join_cluster --ram rabbit@rabbit1
             rabbitmqctl start_app
             rabbitmqctl cluster_status  //查看集群状态
             exit
