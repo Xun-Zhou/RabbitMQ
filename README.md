@@ -7,9 +7,9 @@
 
 - [RabbitMQ 集群](https://github.com/Xun-Zhou/RabbitMQ/tree/master/cluster)
 
-- [RabbitMQ RPC](#)
-
 - [RabbitMQ 事物](#)
+
+- [RabbitMQ RPC](#)
 
 - [RabbitMQ 持久化](#)
 

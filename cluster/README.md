@@ -63,11 +63,11 @@
    
      - 设置节点1
      
-            `docker exec -it myrabbit1 /bin/bash`   //进入节点1容器
-            `rabbitmqctl stop_app`     //停止RabbitMQ应用
-            `rabbitmqctl reset`    //重置
-            `rabbitmqctl start_app`    //启动RabbitMQ应用
-            `exit`     //退出容器
+            docker exec -it myrabbit1 /bin/bash   //进入节点1容器
+            rabbitmqctl stop_app     //停止RabbitMQ应用
+            rabbitmqctl reset    //重置
+            rabbitmqctl start_app    //启动RabbitMQ应用
+            exit     //退出容器
            
      - 设置节点2
           
