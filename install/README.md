@@ -69,5 +69,10 @@ RabbitMQ安装 安装部署环境 Windows
     - 查看绑定
     
         /sbin/rabbitmqctl list_bindings
-    
-    
+
+# web后台
+启动后在浏览器页面输入http://localhost:15672
+
+默认用户名密码都是guest
+
+![Web](https://github.com/Xun-Zhou/RabbitMQ/blob/master/install/web.png "Web")
