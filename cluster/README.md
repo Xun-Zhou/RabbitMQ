@@ -47,15 +47,27 @@
     
     多个容器之间使用“--link”连接，Erlang Cookie值必须相同，也就是RABBITMQ_ERLANG_COOKIE参数的值必须相同。
     
+    RabbitMQ是用Erlang实现的，Erlang Cookie相当于不同节点之间相互通讯的秘钥，Erlang节点通过交换Erlang Cookie获得认证。
+    
+    docker logs 容器名 查看容器日志 home dir为容器中Erlang Cookie的位置，
+    
+    获取到第一个RabbitMQ的Erlang Cookie之后，只需要把这个文件复制到其他RabbitMQ节点即可。
+    
+    docker物理机和容器之间复制命令如下：
+    
+    容器复制文件到物理机：docker cp 容器名称:容器目录 物理机目录
+    
+    物理机复制文件到容器：docker cp 物理机目录 容器名称:容器目录
+    
    - 加入RabbitMQ节点到集群
    
      - 设置节点1
      
-            docker exec -it myrabbit1 /bin/bash   //进入节点1容器
-            rabbitmqctl stop_app     //停止RabbitMQ应用
-            rabbitmqctl reset    //重置
-            rabbitmqctl start_app    //启动RabbitMQ应用
-            exit     //退出容器
+            `docker exec -it myrabbit1 /bin/bash`   //进入节点1容器
+            `rabbitmqctl stop_app`     //停止RabbitMQ应用
+            `rabbitmqctl reset`    //重置
+            `rabbitmqctl start_app`    //启动RabbitMQ应用
+            `exit`     //退出容器
            
      - 设置节点2
           
