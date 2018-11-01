@@ -10,7 +10,7 @@
           
         3.channel.txRollback()回滚事务；
     
-    (```)<br>
+    ```
       //链接工厂
       ConnectionFactory connectionFactory = new ConnectionFactory();
       connectionFactory.setUsername("guest");
@@ -40,5 +40,5 @@
           channel.close();
           connection.close();
       }
-    (```)
+    ```
 - 使用发送者确认模式实现
