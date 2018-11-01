@@ -10,23 +10,23 @@ import javax.annotation.Resource;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = DemoApplication.class)
-public class RabbitMqTest {
+public class ExchangeTypeTest {
 
     @Resource(name = "component.RabbitmqSender")
     private RabbitMQSender rabbitMQSender;
 
     @Test
-    public void directQueueTest(){
+    public void directQueueTest() {
         rabbitMQSender.directQueueSender("directQueueTest");
     }
 
     @Test
-    public void topicQueueTest(){
+    public void topicQueueTest() {
         rabbitMQSender.topicQueueSender("topicQueueTest");
     }
 
     @Test
-    public void fanoutQueueTest(){
+    public void fanoutQueueTest() {
         rabbitMQSender.fanoutQueueSender("fanoutQueueTest");
     }
 
