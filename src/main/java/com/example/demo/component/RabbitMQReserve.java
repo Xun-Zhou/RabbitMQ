@@ -23,4 +23,11 @@ public class RabbitMQReserve {
     public void fanoutQueueReceive(String message) {
         System.out.println(message);
     }
+
+    /**direct queue接收*/
+    @RabbitListener(queues = "transactionQueue")
+    public void transactionQueueReceive(byte message[]) {
+        String temp = new String(message);
+        System.out.println(temp);
+    }
 }

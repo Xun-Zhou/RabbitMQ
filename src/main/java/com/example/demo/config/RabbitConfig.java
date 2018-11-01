@@ -26,6 +26,8 @@ public class RabbitConfig {
 
     public static final String TOPIC_KEY = "topicQueue.#";
 
+    public static final String TRANSACTION_QUEUE_ROUTING = "transactionQueue";
+
     @Value("${spring.rabbitmq.host}")
     private String host;
 
@@ -100,6 +102,11 @@ public class RabbitConfig {
         return new Queue(FANOUT_QUEUE_ROUTING_ONE, true);
     }
 
+    @Bean
+    public Queue transactionQueue() {
+        return new Queue(TRANSACTION_QUEUE_ROUTING, true);
+    }
+
     /**
      * ----------------绑定----------------
      */
@@ -116,6 +123,11 @@ public class RabbitConfig {
     @Bean
     public Binding bindFanoutExchangeFanoutOne(Queue fanoutQueueOne, FanoutExchange fanoutExchange) {
         return BindingBuilder.bind(fanoutQueueOne).to(fanoutExchange);
+    }
+
+    @Bean
+    public Binding bindDirectExchangeTransaction(Queue transactionQueue, DirectExchange directExchange) {
+        return BindingBuilder.bind(transactionQueue).to(directExchange).with(TRANSACTION_QUEUE_ROUTING);
     }
 
 }
