@@ -14,7 +14,7 @@ import java.util.concurrent.TimeoutException;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = DemoApplication.class)
-public class TransactionTest {
+public class AMQPTransactionTest {
 
     private ConnectionFactory getConnectionFactory() {
         ConnectionFactory connectionFactory = new ConnectionFactory();
@@ -26,6 +26,7 @@ public class TransactionTest {
         return connectionFactory;
     }
 
+    /**AMQP事务*/
     @Test
     public void transactionTest() throws IOException, TimeoutException {
         ConnectionFactory connectionFactory = getConnectionFactory();
@@ -35,7 +36,7 @@ public class TransactionTest {
         try {
             channel.txSelect();
             channel.basicPublish("directExchange", "transactionQueue", null, message.getBytes("UTF-8"));
-            int t = 1 / 0;
+            //int t = 1 / 0;
             channel.txCommit();
         } catch (Exception e) {
             e.printStackTrace();
@@ -46,6 +47,7 @@ public class TransactionTest {
         }
     }
 
+    /**单个确认*/
     @Test
     public void confirmOneTest() throws IOException, TimeoutException, InterruptedException {
         ConnectionFactory connectionFactory = getConnectionFactory();
@@ -59,6 +61,7 @@ public class TransactionTest {
         }
     }
 
+    /**批量确认*/
     @Test
     public void confirmTwoTest() throws IOException, TimeoutException, InterruptedException {
         ConnectionFactory connectionFactory = getConnectionFactory();
@@ -73,8 +76,9 @@ public class TransactionTest {
         System.out.println("success");
     }
 
+    /**异步确认*/
     @Test
-    public void confirmThreeTest() throws IOException, TimeoutException, InterruptedException {
+    public void confirmThreeTest() throws IOException, TimeoutException {
         ConnectionFactory connectionFactory = getConnectionFactory();
         Connection connection = connectionFactory.newConnection();
         Channel channel = connection.createChannel();

@@ -43,6 +43,12 @@ public class RabbitConfig {
     @Value("${spring.rabbitmq.password}")
     private String passWord;
 
+    @Value("${spring.rabbitmq.publisher-confirms}")
+    private Boolean publisherConfirms;
+
+    @Value("${spring.rabbitmq.publisher-returns}")
+    private Boolean publisherReturns;
+
     /**
      * 链接工厂
      */
@@ -52,8 +58,8 @@ public class RabbitConfig {
         connectionFactory.setUsername(userName);
         connectionFactory.setPassword(passWord);
         connectionFactory.setVirtualHost(virtualHost);
-        connectionFactory.setPublisherConfirms(true);
-        connectionFactory.setPublisherReturns(true);
+        connectionFactory.setPublisherConfirms(publisherConfirms);
+        connectionFactory.setPublisherReturns(publisherReturns);
         return connectionFactory;
     }
 
