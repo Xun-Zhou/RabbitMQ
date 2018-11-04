@@ -9,9 +9,7 @@
 
 - [RabbitMQ 事务](https://github.com/Xun-Zhou/RabbitMQ/tree/master/transaction)
 
-- [RabbitMQ RPC](#)
-
-- [RabbitMQ 持久化](#)
+- [RabbitMQ 持久化](https://github.com/Xun-Zhou/RabbitMQ/tree/master/persistent)
 
 - [RabbitMQ 延迟队列](#)
 
