@@ -11,6 +11,6 @@
 
 - [RabbitMQ 持久化](https://github.com/Xun-Zhou/RabbitMQ/tree/master/persistent)
 
-- [RabbitMQ 延迟队列](#)
+- [RabbitMQ 延迟队列](https://github.com/Xun-Zhou/RabbitMQ/tree/master/deadLetter)
 
 - [为什么选择RabbitMQ](https://github.com/Xun-Zhou/RabbitMQ/tree/master/choose)
