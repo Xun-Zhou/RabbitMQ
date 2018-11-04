@@ -14,6 +14,9 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Scope;
 
+import java.util.HashMap;
+import java.util.Map;
+
 @Configuration
 public class RabbitConfig {
 
@@ -22,6 +25,8 @@ public class RabbitConfig {
     public static final String TOPIC_EXCHANGE = "topicExchange";
 
     public static final String FANOUT_EXCHANGE = "fanoutExchange";
+
+    public static final String DEAD_LETTER_EXCHANGE = "deadLetterExchange";
 
     public static final String DIRECT_QUEUE_ROUTING = "directQueue";
 
@@ -34,6 +39,10 @@ public class RabbitConfig {
     public static final String TRANSACTION_QUEUE_ROUTING = "transactionQueue";
 
     public static final String CALL_BACK_QUEUE_ROUTING = "callBackQueue";
+
+    public static final String DEAD_QUEUE_ROUTING = "deadQueue";
+
+    public static final String LETTER_QUEUE_ROUTING = "letterQueue";
 
     @Value("${spring.rabbitmq.host}")
     private String host;
@@ -99,6 +108,11 @@ public class RabbitConfig {
         return new FanoutExchange(FANOUT_EXCHANGE);
     }
 
+    @Bean
+    public DirectExchange deadLetterExchange() {
+        return new DirectExchange(DEAD_LETTER_EXCHANGE);
+    }
+
     /**
      * ----------------队列----------------
      */
@@ -127,6 +141,20 @@ public class RabbitConfig {
         return new Queue(CALL_BACK_QUEUE_ROUTING, true);
     }
 
+    @Bean
+    public Queue dieQueue() {
+        Map<String, Object> arguments = new HashMap<>();
+        arguments.put("x-message-ttl",20000);//过期时间 毫秒
+        arguments.put("x-dead-letter-exchange",DEAD_LETTER_EXCHANGE);//过期后发送交换机
+        arguments.put("x-dead-letter-routing-key",LETTER_QUEUE_ROUTING);//过期后发送队列
+        return new Queue(DEAD_QUEUE_ROUTING, true, false,false, arguments);
+    }
+
+    @Bean
+    public Queue letterQueue() {
+        return new Queue(LETTER_QUEUE_ROUTING, true);
+    }
+
     /**
      * ----------------绑定----------------
      */
@@ -153,6 +181,16 @@ public class RabbitConfig {
     @Bean
     public Binding bindDirectExchangeCallBack(Queue callBackQueue, DirectExchange directExchange) {
         return BindingBuilder.bind(callBackQueue).to(directExchange).with(CALL_BACK_QUEUE_ROUTING);
+    }
+
+    @Bean
+    public Binding bindLetterExchangeDie(Queue dieQueue, DirectExchange deadLetterExchange) {
+        return BindingBuilder.bind(dieQueue).to(deadLetterExchange).with(DEAD_QUEUE_ROUTING);
+    }
+
+    @Bean
+    public Binding bindLetterExchangeLetter(Queue letterQueue, DirectExchange deadLetterExchange) {
+        return BindingBuilder.bind(letterQueue).to(deadLetterExchange).with(LETTER_QUEUE_ROUTING);
     }
 
     /**
