@@ -128,8 +128,82 @@
       });
     ```         
 - 结合spring boot来使用确认机制
-        
-        
-        
-        
-        
+    
+    - 发布者发布消息，服务器确认回调
+    ```
+    @Component
+    public class CallBackSender implements RabbitTemplate.ConfirmCallback, RabbitTemplate.ReturnCallback {
+    
+        @Resource(name = "rabbitTemplate")
+        private RabbitTemplate amqpTemplate;
+    
+        public void send(String message) {
+            amqpTemplate.setConfirmCallback(this);
+            amqpTemplate.setReturnCallback(this);
+            amqpTemplate.convertAndSend(RabbitConfig.DIRECT_EXCHANGE, RabbitConfig.DIRECT_QUEUE_ROUTING, message);
+            //amqpTemplate.convertAndSend(RabbitConfig.DIRECT_EXCHANGE, "XXXXXXXXXX", message);
+        }
+    
+        @Override
+        public void confirm(CorrelationData correlationData, boolean b, String s) {
+            System.out.println("call back confirm: " + correlationData + " ACK : " + b + " cause : "+ s);
+        }
+    
+        @Override
+        public void returnedMessage(Message message, int i, String s, String s1, String s2) {
+            System.out.println("returned message: " + message);
+        }
+    }
+    ```
+    实现RabbitTemplate.ConfirmCallback，重写confirm方法，发布者发布消息后会得到服务器的返回。
+    单例模式下的RabbitTemplate只能设置一次ConfirmCallback。
+    @Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE) 改为多例模式。
+    
+    实现RabbitTemplate.ConfirmCallback，重写returnedMessage方法，发布者发布消息后，exchange到queue失败，会得到服务器的返回信息。
+    需要设置rabbitTemplate.setMandatory(true);否则不会回调，消息丢失。
+    如果消息没有到exchange,则confirm回调,ack=false
+    如果消息到达exchange,则confirm回调,ack=true
+    exchange到queue成功,则不回调return
+    exchange到queue失败,则回调return(需设置mandatory=true,否则不会回调，消息丢失)
+    
+    - 消费方接收消息，告知rabbitmq消息消费成功或失败。
+    
+    自动确认会在消息发送给消费者后立即确认，如果手动则当消费者调用ack,nack,reject几种方法时进行确认。
+    手动确认需要设置
+    spring.rabbitmq.listener.simple.acknowledge-mode=manual默认为auto自动确认
+    所有queue需要消费者手动确认后，rabbitmq队列才将消息删除
+    ```
+    @Component
+    public class CallBackReserve {
+    
+        @RabbitListener(queues = "callBackQueue")
+        public void reserve(Message message, Channel channel) throws Exception {
+            try{
+                System.out.println("consumer"+":"+new String(message.getBody()));
+                channel.basicAck(message.getMessageProperties().getDeliveryTag(), false);
+            }catch(Exception e){
+                e.printStackTrace();
+                channel.basicNack(message.getMessageProperties().getDeliveryTag(), false,false);
+            }
+        }
+    }
+    ```
+    可以使用SimpleMessageListenerContainer指定部分队列需要手动确认
+    ```
+    @Bean
+    public SimpleMessageListenerContainer messageContainer() {
+        SimpleMessageListenerContainer container = new SimpleMessageListenerContainer(connectionFactory());
+        container.setQueues(callBackQueue());//queue1(),queue()2,...绑定队列
+        container.setExposeListenerChannel(true);
+        container.setMaxConcurrentConsumers(1);
+        container.setConcurrentConsumers(1);
+        container.setAcknowledgeMode(AcknowledgeMode.MANUAL);//设置通知方式为手动确认
+        ChannelAwareMessageListener channelAwareMessageListener = (message, channel) -> {
+            byte[] body = message.getBody();
+            System.out.println("receive msg : " + new String(body));
+            channel.basicAck(message.getMessageProperties().getDeliveryTag(), false);
+        };
+        container.setMessageListener(channelAwareMessageListener);
+        return container;
+    }
+    ```

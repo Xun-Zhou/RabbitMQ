@@ -89,11 +89,11 @@ public class AMQPTransactionTest {
         }
         channel.addConfirmListener(new ConfirmListener() {
             @Override
-            public void handleAck(long l, boolean b) throws IOException {
+            public void handleAck(long l, boolean b) {
                 System.out.println(String.format("已确认消息，标识：%d，多个消息：%b", l, b));
             }
             @Override
-            public void handleNack(long l, boolean b) throws IOException {
+            public void handleNack(long l, boolean b) {
                 System.out.println("未确认消息，标识：" + l);
             }
         });

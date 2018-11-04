@@ -1,13 +1,18 @@
 package com.example.demo.config;
 
+import com.rabbitmq.client.Channel;
 import org.springframework.amqp.core.*;
 import org.springframework.amqp.rabbit.connection.CachingConnectionFactory;
 import org.springframework.amqp.rabbit.connection.ConnectionFactory;
+import org.springframework.amqp.rabbit.core.ChannelAwareMessageListener;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
+import org.springframework.amqp.rabbit.listener.SimpleMessageListenerContainer;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Scope;
 
 @Configuration
 public class RabbitConfig {
@@ -27,6 +32,8 @@ public class RabbitConfig {
     public static final String TOPIC_KEY = "topicQueue.#";
 
     public static final String TRANSACTION_QUEUE_ROUTING = "transactionQueue";
+
+    public static final String CALL_BACK_QUEUE_ROUTING = "callBackQueue";
 
     @Value("${spring.rabbitmq.host}")
     private String host;
@@ -67,8 +74,10 @@ public class RabbitConfig {
      * rabbitTemplate
      */
     @Bean(name = "rabbitTemplate")
+    @Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
     public RabbitTemplate primaryRabbitTemplate(@Qualifier("connectionFactory") ConnectionFactory connectionFactory) {
         RabbitTemplate rabbitTemplate = new RabbitTemplate(connectionFactory);
+        rabbitTemplate.setMandatory(true);
         return rabbitTemplate;
     }
 
@@ -113,6 +122,11 @@ public class RabbitConfig {
         return new Queue(TRANSACTION_QUEUE_ROUTING, true);
     }
 
+    @Bean
+    public Queue callBackQueue() {
+        return new Queue(CALL_BACK_QUEUE_ROUTING, true);
+    }
+
     /**
      * ----------------绑定----------------
      */
@@ -136,4 +150,28 @@ public class RabbitConfig {
         return BindingBuilder.bind(transactionQueue).to(directExchange).with(TRANSACTION_QUEUE_ROUTING);
     }
 
+    @Bean
+    public Binding bindDirectExchangeCallBack(Queue callBackQueue, DirectExchange directExchange) {
+        return BindingBuilder.bind(callBackQueue).to(directExchange).with(CALL_BACK_QUEUE_ROUTING);
+    }
+
+    /**
+     * ----------------------listener container--------------------------
+     */
+    @Bean
+    public SimpleMessageListenerContainer messageContainer() {
+        SimpleMessageListenerContainer container = new SimpleMessageListenerContainer(connectionFactory());
+        container.setQueues(callBackQueue());
+        container.setExposeListenerChannel(true);
+        container.setMaxConcurrentConsumers(1);
+        container.setConcurrentConsumers(1);
+        container.setAcknowledgeMode(AcknowledgeMode.MANUAL);
+        ChannelAwareMessageListener channelAwareMessageListener = (message, channel) -> {
+            byte[] body = message.getBody();
+            System.out.println("receive msg : " + new String(body));
+            channel.basicAck(message.getMessageProperties().getDeliveryTag(), false);
+        };
+        container.setMessageListener(channelAwareMessageListener);
+        return container;
+    }
 }
