@@ -4,15 +4,15 @@
     
     定义queue时，加入延时参数，其他操作与普通消息发送接收一致，接收方要监听的队列是过期后转发的队列。
     
-    ```
-    @Bean
-    public Queue dieQueue() {
-        Map<String, Object> arguments = new HashMap<>();
-        arguments.put("x-message-ttl",20000);//过期时间 毫秒
-        arguments.put("x-dead-letter-exchange",DEAD_LETTER_EXCHANGE);//过期后转发交换机
-        arguments.put("x-dead-letter-routing-key",LETTER_QUEUE_ROUTING);//过期后转发队列
-        return new Queue(DEAD_QUEUE_ROUTING, true, false,false, arguments);
-    }
-    ```
+```java
+@Bean
+public Queue dieQueue() {
+    Map<String, Object> arguments = new HashMap<>();
+    arguments.put("x-message-ttl",20000);//过期时间 毫秒
+    arguments.put("x-dead-letter-exchange",DEAD_LETTER_EXCHANGE);//过期后转发交换机
+    arguments.put("x-dead-letter-routing-key",LETTER_QUEUE_ROUTING);//过期后转发队列
+    return new Queue(DEAD_QUEUE_ROUTING, true, false,false, arguments);
+}
+```
     
    ![DeadLetter](https://github.com/Xun-Zhou/RabbitMQ/blob/master/deadLetter/deadLetter.png "DeadLetter")
